@@ -9,6 +9,74 @@ channels:
     name: TVP 2
     aliases: [TVP2, TVP Dwa, Dwójka]
     category: ogólne
+  - id: tvp-3.pl
+    name: TVP 3
+    aliases: [TVP3]
+    category: regionalne
+  - id: tvp-3-bialystok.pl
+    name: TVP 3 Białystok
+    aliases: [TVP3 Białystok, TVP 3 Bialystok, TVP3 Bialystok, TVP Białystok]
+    category: regionalne
+  - id: tvp-3-bydgoszcz.pl
+    name: TVP 3 Bydgoszcz
+    aliases: [TVP3 Bydgoszcz, TVP Bydgoszcz]
+    category: regionalne
+  - id: tvp-3-gdansk.pl
+    name: TVP 3 Gdańsk
+    aliases: [TVP3 Gdańsk, TVP 3 Gdansk, TVP3 Gdansk, TVP Gdańsk, TVP Gdansk]
+    category: regionalne
+  - id: tvp-3-gorzow-wielkopolski.pl
+    name: TVP 3 Gorzów Wielkopolski
+    aliases: [TVP3 Gorzów Wielkopolski, TVP 3 Gorzow Wielkopolski, TVP3 Gorzow Wielkopolski, TVP 3 Gorzów Wlkp., TVP3 Gorzów Wlkp, TVP 3 Gorzów, TVP3 Gorzów, TVP 3 Gorzow, TVP3 Gorzow]
+    category: regionalne
+  - id: tvp-3-katowice.pl
+    name: TVP 3 Katowice
+    aliases: [TVP3 Katowice, TVP Katowice]
+    category: regionalne
+  - id: tvp-3-kielce.pl
+    name: TVP 3 Kielce
+    aliases: [TVP3 Kielce, TVP Kielce]
+    category: regionalne
+  - id: tvp-3-krakow.pl
+    name: TVP 3 Kraków
+    aliases: [TVP3 Kraków, TVP 3 Krakow, TVP3 Krakow, TVP Kraków, TVP Krakow]
+    category: regionalne
+  - id: tvp-3-lublin.pl
+    name: TVP 3 Lublin
+    aliases: [TVP3 Lublin, TVP Lublin]
+    category: regionalne
+  - id: tvp-3-lodz.pl
+    name: TVP 3 Łódź
+    aliases: [TVP3 Łódź, TVP 3 Lodz, TVP3 Lodz, TVP Łódź, TVP Lodz]
+    category: regionalne
+  - id: tvp-3-olsztyn.pl
+    name: TVP 3 Olsztyn
+    aliases: [TVP3 Olsztyn, TVP Olsztyn, TVP3 Olsztyn/Elbląg]
+    category: regionalne
+  - id: tvp-3-opole.pl
+    name: TVP 3 Opole
+    aliases: [TVP3 Opole, TVP Opole]
+    category: regionalne
+  - id: tvp-3-poznan.pl
+    name: TVP 3 Poznań
+    aliases: [TVP3 Poznań, TVP 3 Poznan, TVP3 Poznan, TVP Poznań, TVP Poznan]
+    category: regionalne
+  - id: tvp-3-rzeszow.pl
+    name: TVP 3 Rzeszów
+    aliases: [TVP3 Rzeszów, TVP 3 Rzeszow, TVP3 Rzeszow, TVP Rzeszów, TVP Rzeszow]
+    category: regionalne
+  - id: tvp-3-szczecin.pl
+    name: TVP 3 Szczecin
+    aliases: [TVP3 Szczecin, TVP Szczecin]
+    category: regionalne
+  - id: tvp-3-warszawa.pl
+    name: TVP 3 Warszawa
+    aliases: [TVP3 Warszawa, TVP Warszawa]
+    category: regionalne
+  - id: tvp-3-wroclaw.pl
+    name: TVP 3 Wrocław
+    aliases: [TVP3 Wrocław, TVP 3 Wroclaw, TVP3 Wroclaw, TVP Wrocław, TVP Wroclaw]
+    category: regionalne
   - id: tvp-info.pl
     name: TVP Info
     aliases: [TVP INFO]
