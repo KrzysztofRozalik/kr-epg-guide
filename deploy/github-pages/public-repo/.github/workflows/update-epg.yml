@@ -22,9 +22,9 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     env:
-      EPG_SITE_DIR: ${{ runner.temp }}/epg-site
-      EPG_STATE_PATH: ${{ runner.temp }}/epg-state.sqlite3
-      EPG_OUTPUT_DIRECTORY: ${{ runner.temp }}/epg-site/v1
+      EPG_SITE_DIR: ${{ github.workspace }}/epg-site
+      EPG_STATE_PATH: ${{ github.workspace }}/epg-state.sqlite3
+      EPG_OUTPUT_DIRECTORY: ${{ github.workspace }}/epg-site/v1
       EPG_PUBLIC_BASE_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/v1
       TMDB_API_TOKEN: ${{ secrets.TMDB_API_TOKEN }}
 
@@ -51,7 +51,7 @@ jobs:
       - name: Cache metadanych
         uses: actions/cache@v4
         with:
-          path: ${{ runner.temp }}/epg-state.sqlite3
+          path: ${{ github.workspace }}/epg-state.sqlite3
           key: epg-state-${{ runner.os }}-${{ steps.cache-date.outputs.date }}
           restore-keys: |
             epg-state-${{ runner.os }}-
@@ -59,7 +59,7 @@ jobs:
       - name: Cache logotypów kanałów
         uses: actions/cache@v4
         with:
-          path: ${{ runner.temp }}/epg-site/v1/dom/logos
+          path: ${{ github.workspace }}/epg-site/v1/dom/logos
           key: epg-logos-${{ runner.os }}-${{ steps.cache-date.outputs.month }}
           restore-keys: |
             epg-logos-${{ runner.os }}-
@@ -92,7 +92,7 @@ jobs:
       - name: Przygotuj artefakt Pages
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ${{ runner.temp }}/epg-site
+          path: ${{ github.workspace }}/epg-site
 
       - name: Opublikuj ostatnią poprawną wersję
         id: deployment
