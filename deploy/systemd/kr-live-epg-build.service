@@ -1,0 +1,17 @@
+[Unit]
+Description=Build KR Live EPG
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=kr-epg
+Group=kr-epg
+WorkingDirectory=/opt/kr-live-epg
+EnvironmentFile=/opt/kr-live-epg/.env
+ExecStart=/opt/kr-live-epg/scripts/run-locked.sh live
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/kr-live-epg/output /opt/kr-live-epg/state

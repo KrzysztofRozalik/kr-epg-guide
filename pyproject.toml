@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "kr-live-epg"
+version = "0.2.1"
+description = "Polish XMLTV aggregator with channel normalization and live schedule overrides"
+readme = "README.md"
+requires-python = ">=3.12"
+authors = [{ name = "Project Owner" }]
+license = "LicenseRef-Proprietary"
+license-files = ["LICENSE"]
+dependencies = [
+  "boto3>=1.35,<2",
+  "fastapi>=0.115,<1",
+  "feedparser>=6.0,<7",
+  "httpx[socks]>=0.28,<0.29",
+  "icalendar>=6,<7",
+  "lxml>=5.3,<7",
+  "pydantic>=2.10,<3",
+  "PyYAML>=6.0,<7",
+  "rapidfuzz>=3.10,<4",
+  "typer>=0.15,<1",
+  "Unidecode>=1.3,<2",
+  "uvicorn[standard]>=0.34,<1",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.3,<9",
+  "pytest-cov>=6,<8",
+  "ruff>=0.9,<1",
+]
+
+[project.scripts]
+kr-live-epg = "kr_live_epg.cli:app"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+kr_live_epg = ["resources/*.yaml"]
+
+[tool.pytest.ini_options]
+addopts = "-q --strict-markers"
+testpaths = ["tests"]
+filterwarnings = [
+  "ignore:Using `httpx` with `starlette.testclient` is deprecated:UserWarning",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]
+"src/kr_live_epg/cli.py" = ["B008"]
+"src/kr_live_epg/service.py" = ["B008"]

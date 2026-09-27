@@ -1,0 +1,11 @@
+[Unit]
+Description=Refresh KR Live EPG every 10 minutes
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=10min
+RandomizedDelaySec=20
+Persistent=true
+
+[Install]
+WantedBy=timers.target

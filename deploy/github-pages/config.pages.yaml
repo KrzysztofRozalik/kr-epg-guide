@@ -1,0 +1,94 @@
+timezone: Europe/Warsaw
+state_path: ${EPG_STATE_PATH:-state/kr-live-epg.sqlite3}
+
+http:
+  timeout_seconds: 30
+  retries: 3
+  max_download_mb: 200
+  max_uncompressed_mb: 512
+
+# Wersja pilotażowa. Dodawaj tylko źródła, których warunki pozwalają na użycie.
+guide_sources:
+  - id: epg-ovh-plar
+    type: xmltv
+    url: https://epg.ovh/plar.gz
+    priority: 50
+    enabled: true
+    trusted: false
+    timezone: Europe/Warsaw
+  - id: epg-ovh-pltv
+    type: xmltv
+    url: https://epg.ovh/pltv.gz
+    priority: 60
+    enabled: true
+    trusted: false
+    timezone: Europe/Warsaw
+
+profiles:
+  dom:
+    playlist:
+      type: none
+      source_id: dom
+    past_days: 7
+    future_days: 14
+    auto_match_threshold: 92
+    auto_match_margin: 6
+    include_unmatched_channels: true
+    emit_provider_aliases: true
+    emit_uncompressed_xml: true
+    max_description_chars: 3000
+  lekki:
+    playlist:
+      type: none
+      source_id: lekki
+    past_days: 2
+    future_days: 7
+    auto_match_threshold: 92
+    auto_match_margin: 6
+    include_unmatched_channels: true
+    emit_provider_aliases: true
+    emit_uncompressed_xml: true
+    max_description_chars: 1000
+
+sentinel:
+  enabled: true
+  near_window_hours: 336
+  feeds:
+    - id: ksw-official
+      url: https://www.kswmma.com/
+      type: html
+      official: true
+      headers:
+        Accept-Encoding: identity
+      item_xpath: "//*[@id='event-slides']//div[contains(concat(' ', normalize-space(@class), ' '), ' swiper-slide ')][.//h2 and .//p]"
+      title_xpath: .//h2//text()
+      body_xpath: .//text()
+      link_xpath: .//a[not(starts-with(@href, '#'))]/@href
+  rules:
+    - id: ksw-gala
+      pattern: '(?P<title>(?:XTB\s+)?KSW\s+\d+)'
+      channel_ids: [ksw.pl]
+      required_terms: []
+      default_duration_minutes: 300
+      min_confidence: 0.9
+
+tmdb:
+  enabled: ${TMDB_ENABLED:-false}
+  api_token: ${TMDB_API_TOKEN:-}
+  language: pl-PL
+  region: PL
+  cache_days: 90
+  max_cast: 10
+  max_requests_per_run: 160
+  min_duration_minutes: 50
+
+logos:
+  enabled: true
+  refresh_days: 30
+  max_download_kb: 2048
+  workers: 8
+
+storage:
+  type: local
+  local_directory: ${EPG_OUTPUT_DIRECTORY:-output}
+  public_base_url: ${EPG_PUBLIC_BASE_URL:-}

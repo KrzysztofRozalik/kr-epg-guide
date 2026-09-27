@@ -1,0 +1,35 @@
+services:
+  epg:
+    build: .
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      KR_EPG_CONFIG: /app/config.yaml
+    volumes:
+      - ./config.yaml:/app/config.yaml:ro
+      - ./output:/app/output
+      - ./state:/app/state
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/healthz', timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  scheduler:
+    build: .
+    command:
+      - /bin/sh
+      - -c
+      - while true; do kr-live-epg build --config /app/config.yaml --mode live; sleep 600; done
+    env_file:
+      - .env
+    environment:
+      KR_EPG_CONFIG: /app/config.yaml
+    volumes:
+      - ./config.yaml:/app/config.yaml:ro
+      - ./output:/app/output
+      - ./state:/app/state
+    restart: unless-stopped

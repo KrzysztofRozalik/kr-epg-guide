@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KR Live EPG</title>
+  <style>
+    :root { color-scheme: dark; font-family: system-ui, sans-serif; }
+    body { max-width: 760px; margin: 4rem auto; padding: 0 1.2rem; background: #101318; color: #edf2f7; }
+    article { background: #19202a; border: 1px solid #2d3748; border-radius: 16px; padding: 1.5rem; }
+    a { color: #63b3ed; overflow-wrap: anywhere; }
+    li { margin: .9rem 0; }
+    small { color: #a0aec0; }
+  </style>
+</head>
+<body>
+  <article>
+    <h1>KR Live EPG</h1>
+    <p>Polski przewodnik XMLTV dla TiViMate, aktualizowany automatycznie co godzinę.</p>
+    <ul>
+      <li><a href="v1/dom/epg.xml.gz">Pełny EPG — 7 dni wstecz, do 14 dni naprzód</a></li>
+      <li><a href="v1/lekki/epg.xml.gz">Lekki EPG — 2 dni wstecz, do 7 dni naprzód</a></li>
+      <li><a href="v1/dom/status.json">Stan ostatniego pełnego przetwarzania</a></li>
+      <li><a href="v1/dom/coverage.json">Raport pokrycia kanałów</a></li>
+    </ul>
+    <p><small>Rzeczywisty zakres zależy od zakresu opublikowanego przez źródła. Historia EPG nie tworzy nagrań — odtwarzanie wstecz wymaga funkcji catch-up operatora.</small></p>
+    <p><a href="credits.html">Źródła danych i informacje prawne</a></p>
+  </article>
+</body>
+</html>

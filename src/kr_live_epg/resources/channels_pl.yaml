@@ -1,0 +1,769 @@
+# Seed registry. It is intentionally conservative: unknown stations are discovered
+# from configured XMLTV sources and added dynamically instead of being guessed.
+channels:
+  - id: tvp-1.pl
+    name: TVP 1
+    aliases: [TVP1, TVP Jeden, Jedynka]
+    category: ogólne
+  - id: tvp-2.pl
+    name: TVP 2
+    aliases: [TVP2, TVP Dwa, Dwójka]
+    category: ogólne
+  - id: tvp-info.pl
+    name: TVP Info
+    aliases: [TVP INFO]
+    category: informacyjne
+  - id: tvp-sport.pl
+    name: TVP Sport
+    aliases: [TVP SPORT]
+    category: sportowe
+  - id: tvp-kultura.pl
+    name: TVP Kultura
+    aliases: []
+    category: kultura
+  - id: tvp-historia.pl
+    name: TVP Historia
+    aliases: []
+    category: dokumentalne
+  - id: tvp-dokument.pl
+    name: TVP Dokument
+    aliases: []
+    category: dokumentalne
+  - id: tvp-nauka.pl
+    name: TVP Nauka
+    aliases: []
+    category: dokumentalne
+  - id: tvp-seriale.pl
+    name: TVP Seriale
+    aliases: []
+    category: seriale
+  - id: tvp-kobieta.pl
+    name: TVP Kobieta
+    aliases: []
+    category: lifestyle
+  - id: tvp-abc.pl
+    name: TVP ABC
+    aliases: []
+    category: dziecięce
+  - id: tvp-polonia.pl
+    name: TV Polonia
+    aliases: [TVP Polonia]
+    category: ogólne
+  - id: tvp-world.pl
+    name: TVP World
+    aliases: []
+    category: informacyjne
+  - id: alfa-tvp.pl
+    name: Alfa TVP
+    aliases: [TVP Alfa]
+    category: dziecięce
+  - id: belsat.pl
+    name: Biełsat TV
+    aliases: [Belsat TV, Biełsat]
+    category: informacyjne
+  - id: polsat.pl
+    name: Polsat
+    aliases: [Telewizja Polsat]
+    category: ogólne
+  - id: polsat-2.pl
+    name: Polsat 2
+    aliases: []
+    category: ogólne
+  - id: super-polsat.pl
+    name: Super Polsat
+    aliases: []
+    category: ogólne
+  - id: tv4.pl
+    name: TV4
+    aliases: [Czwórka]
+    category: ogólne
+  - id: tv6.pl
+    name: TV6
+    aliases: [Szóstka]
+    category: ogólne
+  - id: polsat-news.pl
+    name: Polsat News
+    aliases: []
+    category: informacyjne
+  - id: polsat-news-2.pl
+    name: Polsat News 2
+    aliases: []
+    category: informacyjne
+  - id: polsat-news-polityka.pl
+    name: Polsat News Polityka
+    aliases: []
+    category: informacyjne
+  - id: wydarzenia-24.pl
+    name: Wydarzenia 24
+    aliases: [W24]
+    category: informacyjne
+  - id: polsat-sport-1.pl
+    name: Polsat Sport 1
+    aliases: [Polsat Sport, PolsatSport 1]
+    category: sportowe
+  - id: polsat-sport-2.pl
+    name: Polsat Sport 2
+    aliases: [PolsatSport 2]
+    category: sportowe
+  - id: polsat-sport-3.pl
+    name: Polsat Sport 3
+    aliases: [PolsatSport 3]
+    category: sportowe
+  - id: polsat-sport-fight.pl
+    name: Polsat Sport Fight
+    aliases: [Polsat Fight]
+    category: sportowe
+  - id: polsat-sport-premium-1.pl
+    name: Polsat Sport Premium 1
+    aliases: [PSP 1]
+    category: sportowe
+  - id: polsat-sport-premium-2.pl
+    name: Polsat Sport Premium 2
+    aliases: [PSP 2]
+    category: sportowe
+  - id: polsat-sport-extra-1.pl
+    name: Polsat Sport Extra 1
+    aliases: [PSE 1]
+    category: sportowe
+  - id: polsat-sport-extra-2.pl
+    name: Polsat Sport Extra 2
+    aliases: [PSE 2]
+    category: sportowe
+  - id: polsat-sport-extra-3.pl
+    name: Polsat Sport Extra 3
+    aliases: [PSE 3]
+    category: sportowe
+  - id: polsat-games.pl
+    name: Polsat Games
+    aliases: []
+    category: sportowe
+  - id: eleven-sports-1.pl
+    name: Eleven Sports 1
+    aliases: [Eleven 1]
+    category: sportowe
+  - id: eleven-sports-2.pl
+    name: Eleven Sports 2
+    aliases: [Eleven 2]
+    category: sportowe
+  - id: eleven-sports-3.pl
+    name: Eleven Sports 3
+    aliases: [Eleven 3]
+    category: sportowe
+  - id: eleven-sports-4.pl
+    name: Eleven Sports 4
+    aliases: [Eleven 4]
+    category: sportowe
+  - id: eurosport-1.pl
+    name: Eurosport 1
+    aliases: []
+    category: sportowe
+  - id: eurosport-2.pl
+    name: Eurosport 2
+    aliases: []
+    category: sportowe
+  - id: canal-plus-sport.pl
+    name: Canal+ Sport
+    aliases: [Canal Plus Sport, C+ Sport]
+    category: sportowe
+  - id: canal-plus-sport-2.pl
+    name: Canal+ Sport 2
+    aliases: [Canal Plus Sport 2, C+ Sport 2]
+    category: sportowe
+  - id: canal-plus-sport-3.pl
+    name: Canal+ Sport 3
+    aliases: [Canal Plus Sport 3, C+ Sport 3]
+    category: sportowe
+  - id: canal-plus-360.pl
+    name: Canal+ 360
+    aliases: [Canal Plus 360, C+ 360]
+    category: sportowe
+  - id: canal-plus-now.pl
+    name: Canal+ Now
+    aliases: [Canal Plus Now, C+ Now]
+    category: sportowe
+  - id: canal-plus-live.pl
+    name: Canal+ Live
+    aliases: [Canal Plus Live, C+ Live]
+    category: sportowe/eventowe
+  - id: canal-plus-live-1.pl
+    name: Canal+ Live 1
+    aliases: [Canal Plus Live 1, C+ Live 1]
+    category: sportowe/eventowe
+  - id: canal-plus-live-2.pl
+    name: Canal+ Live 2
+    aliases: [Canal Plus Live 2, C+ Live 2]
+    category: sportowe/eventowe
+  - id: canal-plus-live-3.pl
+    name: Canal+ Live 3
+    aliases: [Canal Plus Live 3, C+ Live 3]
+    category: sportowe/eventowe
+  - id: canal-plus-live-4.pl
+    name: Canal+ Live 4
+    aliases: [Canal Plus Live 4, C+ Live 4]
+    category: sportowe/eventowe
+  - id: canal-plus-live-5.pl
+    name: Canal+ Live 5
+    aliases: [Canal Plus Live 5, C+ Live 5]
+    category: sportowe/eventowe
+  - id: canal-plus-premium.pl
+    name: Canal+ Premium
+    aliases: [Canal Plus Premium, C+ Premium]
+    category: filmowe
+  - id: canal-plus-film.pl
+    name: Canal+ Film
+    aliases: [Canal Plus Film, C+ Film]
+    category: filmowe
+  - id: canal-plus-seriale.pl
+    name: Canal+ Seriale
+    aliases: [Canal Plus Seriale, C+ Seriale]
+    category: seriale
+  - id: canal-plus-dokument.pl
+    name: Canal+ Dokument
+    aliases: [Canal Plus Dokument, C+ Dokument]
+    category: dokumentalne
+  - id: canal-plus-kuchnia.pl
+    name: Canal+ Kuchnia
+    aliases: [Canal Plus Kuchnia, Kuchnia+]
+    category: lifestyle
+  - id: canal-plus-domo.pl
+    name: Canal+ Domo
+    aliases: [Canal Plus Domo, Domo+]
+    category: lifestyle
+  - id: canal-plus-family.pl
+    name: Canal+ Family
+    aliases: [Canal Plus Family, C+ Family]
+    category: filmowe
+  - id: tvn.pl
+    name: TVN
+    aliases: []
+    category: ogólne
+  - id: tvn-7.pl
+    name: TVN 7
+    aliases: [TVN7, Siódemka]
+    category: ogólne
+  - id: tvn-24.pl
+    name: TVN24
+    aliases: [TVN 24]
+    category: informacyjne
+  - id: tvn-24-bis.pl
+    name: TVN24 BiS
+    aliases: [TVN 24 BiS]
+    category: informacyjne
+  - id: tvn-fabula.pl
+    name: TVN Fabuła
+    aliases: [TVN Fabula]
+    category: filmowe
+  - id: tvn-style.pl
+    name: TVN Style
+    aliases: []
+    category: lifestyle
+  - id: tvn-turbo.pl
+    name: TVN Turbo
+    aliases: []
+    category: lifestyle
+  - id: ttv.pl
+    name: TTV
+    aliases: []
+    category: ogólne
+  - id: metro.pl
+    name: Metro
+    aliases: [Metro TV]
+    category: ogólne
+  - id: hbo.pl
+    name: HBO
+    aliases: [HBO 1]
+    category: filmowe
+  - id: hbo-2.pl
+    name: HBO 2
+    aliases: []
+    category: filmowe
+  - id: hbo-3.pl
+    name: HBO 3
+    aliases: []
+    category: filmowe
+  - id: cinemax.pl
+    name: Cinemax
+    aliases: [Cinemax 1]
+    category: filmowe
+  - id: cinemax-2.pl
+    name: Cinemax 2
+    aliases: []
+    category: filmowe
+  - id: axn.pl
+    name: AXN
+    aliases: []
+    category: seriale
+  - id: axn-black.pl
+    name: AXN Black
+    aliases: []
+    category: seriale
+  - id: axn-white.pl
+    name: AXN White
+    aliases: []
+    category: seriale
+  - id: axn-spin.pl
+    name: AXN Spin
+    aliases: []
+    category: seriale
+  - id: fx.pl
+    name: FX
+    aliases: [FOX, Fox, FOX HD]
+    predecessor_ids: [fox.pl]
+    category: seriale
+  - id: fx-comedy.pl
+    name: FX Comedy
+    aliases: [FOX Comedy, Fox Comedy, FOX Comedy HD]
+    predecessor_ids: [fox-comedy.pl]
+    category: rozrywkowe
+  - id: warner-tv.pl
+    name: Warner TV
+    aliases: [WarnerTV]
+    category: filmowe
+  - id: paramount-network.pl
+    name: Paramount Network
+    aliases: []
+    category: filmowe
+  - id: comedy-central.pl
+    name: Comedy Central
+    aliases: []
+    category: rozrywkowe
+  - id: comedy-central-family.pl
+    name: Comedy Central Family
+    aliases: []
+    category: rozrywkowe
+  - id: polsat-comedy-central-extra.pl
+    name: Polsat Comedy Central Extra
+    aliases: [Comedy Central Extra]
+    category: rozrywkowe
+  - id: polsat-film.pl
+    name: Polsat Film
+    aliases: []
+    category: filmowe
+  - id: kino-polska.pl
+    name: Kino Polska
+    aliases: []
+    category: filmowe
+  - id: kino-polska-muzyka.pl
+    name: Kino Polska Muzyka
+    aliases: []
+    category: muzyczne
+  - id: stopklatka.pl
+    name: Stopklatka
+    aliases: [Stopklatka TV]
+    category: filmowe
+  - id: film-cafe.pl
+    name: Film Cafe
+    aliases: [Film Café]
+    category: filmowe
+  - id: epic-drama.pl
+    name: Epic Drama
+    aliases: []
+    category: seriale
+  - id: amc.pl
+    name: AMC
+    aliases: []
+    category: filmowe
+  - id: film-box-premium.pl
+    name: FilmBox Premium
+    aliases: [Filmbox Premium]
+    category: filmowe
+  - id: film-box-extra.pl
+    name: FilmBox Extra
+    aliases: [Filmbox Extra]
+    category: filmowe
+  - id: film-box-family.pl
+    name: FilmBox Family
+    aliases: [Filmbox Family]
+    category: filmowe
+  - id: film-box-action.pl
+    name: FilmBox Action
+    aliases: [Filmbox Action]
+    category: filmowe
+  - id: film-box-arthouse.pl
+    name: FilmBox Arthouse
+    aliases: [Filmbox Arthouse]
+    category: filmowe
+  - id: discovery-channel.pl
+    name: Discovery Channel
+    aliases: [Discovery]
+    category: dokumentalne
+  - id: discovery-science.pl
+    name: Discovery Science
+    aliases: []
+    category: dokumentalne
+  - id: discovery-historia.pl
+    name: Discovery Historia
+    aliases: []
+    category: dokumentalne
+  - id: discovery-life.pl
+    name: Discovery Life
+    aliases: []
+    category: lifestyle
+  - id: national-geographic.pl
+    name: National Geographic
+    aliases: [Nat Geo]
+    category: dokumentalne
+  - id: national-geographic-wild.pl
+    name: National Geographic Wild
+    aliases: [Nat Geo Wild]
+    category: dokumentalne
+  - id: history.pl
+    name: History
+    aliases: [History Channel]
+    category: dokumentalne
+  - id: history-2.pl
+    name: History 2
+    aliases: [H2]
+    category: dokumentalne
+  - id: polsat-viasat-history.pl
+    name: Polsat Viasat History
+    aliases: [Viasat History]
+    category: dokumentalne
+  - id: polsat-viasat-explore.pl
+    name: Polsat Viasat Explore
+    aliases: [Viasat Explore]
+    category: dokumentalne
+  - id: polsat-viasat-nature.pl
+    name: Polsat Viasat Nature
+    aliases: [Viasat Nature]
+    category: dokumentalne
+  - id: animal-planet.pl
+    name: Animal Planet
+    aliases: []
+    category: dokumentalne
+  - id: bbc-earth.pl
+    name: BBC Earth
+    aliases: []
+    category: dokumentalne
+  - id: crime-investigation-polsat.pl
+    name: Crime+Investigation Polsat
+    aliases: [Crime Investigation Polsat, CI Polsat]
+    category: dokumentalne
+  - id: investigation-discovery.pl
+    name: Investigation Discovery
+    aliases: [ID]
+    category: dokumentalne
+  - id: dtx.pl
+    name: DTX
+    aliases: []
+    category: dokumentalne
+  - id: fokus-tv.pl
+    name: Fokus TV
+    aliases: []
+    category: dokumentalne
+  - id: tlc.pl
+    name: TLC
+    aliases: []
+    category: lifestyle
+  - id: travel-channel.pl
+    name: Travel Channel
+    aliases: []
+    category: lifestyle
+  - id: food-network.pl
+    name: Food Network
+    aliases: []
+    category: lifestyle
+  - id: hgtv.pl
+    name: HGTV
+    aliases: []
+    category: lifestyle
+  - id: polsat-cafe.pl
+    name: Polsat Cafe
+    aliases: [Polsat Café]
+    category: lifestyle
+  - id: polsat-play.pl
+    name: Polsat Play
+    aliases: []
+    category: lifestyle
+  - id: polsat-doku.pl
+    name: Polsat Doku
+    aliases: []
+    category: dokumentalne
+  - id: disney-channel.pl
+    name: Disney Channel
+    aliases: []
+    category: dziecięce
+  - id: disney-junior.pl
+    name: Disney Junior
+    aliases: []
+    category: dziecięce
+  - id: cartoon-network.pl
+    name: Cartoon Network
+    aliases: []
+    category: dziecięce
+  - id: cartoonito.pl
+    name: Cartoonito
+    aliases: []
+    category: dziecięce
+  - id: nickelodeon.pl
+    name: Nickelodeon
+    aliases: [Nick]
+    category: dziecięce
+  - id: nick-jr.pl
+    name: Nick Jr.
+    aliases: [Nick Junior]
+    category: dziecięce
+  - id: minimini-plus.pl
+    name: MiniMini+
+    aliases: [MiniMini Plus]
+    category: dziecięce
+  - id: teletoon-plus.pl
+    name: teleTOON+
+    aliases: [Teletoon Plus]
+    category: dziecięce
+  - id: 4fun-tv.pl
+    name: 4FUN.TV
+    aliases: [4FUN TV]
+    category: muzyczne
+  - id: eska-tv.pl
+    name: Eska TV
+    aliases: []
+    category: muzyczne
+  - id: polo-tv.pl
+    name: Polo TV
+    aliases: []
+    category: muzyczne
+  - id: disco-polo-music.pl
+    name: Disco Polo Music
+    aliases: []
+    category: muzyczne
+  - id: polsat-music.pl
+    name: Polsat Music
+    aliases: []
+    category: muzyczne
+  - id: mtv-polska.pl
+    name: MTV Polska
+    aliases: [MTV PL, MTV Poland]
+    category: muzyczne
+  - id: mtv-live.pl
+    name: MTV Live
+    aliases: [MTV Live HD]
+    category: muzyczne
+  - id: mtv-00s.pl
+    name: MTV 00s
+    aliases: [MTV 00's, MTV 2000s, MTV Noughties]
+    category: muzyczne
+  - id: mtv-90s.pl
+    name: MTV 90s
+    aliases: [MTV 90's, MTV Nineties]
+    category: muzyczne
+  - id: mtv-80s.pl
+    name: MTV 80s
+    aliases: [MTV 80's, MTV Eighties]
+    category: muzyczne
+  - id: deejay-tv.pl
+    name: Deejay TV
+    aliases: [DeeJay, Radio Deejay TV]
+    category: muzyczne
+  - id: vox-music-tv.pl
+    name: VOX Music TV
+    aliases: [Vox Music]
+    category: muzyczne
+  - id: tv-republika.pl
+    name: Telewizja Republika
+    aliases: [TV Republika, Republika]
+    category: informacyjne
+  - id: wpolsce24.pl
+    name: wPolsce24
+    aliases: [w Polsce 24]
+    category: informacyjne
+  - id: biznes24.pl
+    name: Biznes24
+    aliases: [Biznes 24]
+    category: informacyjne
+  - id: puls.pl
+    name: TV Puls
+    aliases: [Puls]
+    category: ogólne
+  - id: puls-2.pl
+    name: Puls 2
+    aliases: [TV Puls 2]
+    category: ogólne
+  - id: nowa-tv.pl
+    name: Nowa TV
+    aliases: []
+    category: ogólne
+  - id: zoom-tv.pl
+    name: Zoom TV
+    aliases: []
+    category: ogólne
+  - id: wp.pl
+    name: WP
+    aliases: [Telewizja WP, WP TV]
+    category: ogólne
+  - id: trwam.pl
+    name: TV Trwam
+    aliases: [Trwam]
+    category: religijne
+  - id: tbn-poland.pl
+    name: TBN Poland
+    aliases: [TBN Polska]
+    category: religijne
+  - id: tvs.pl
+    name: TVS
+    aliases: [Telewizja Silesia]
+    category: regionalne
+  - id: tele5.pl
+    name: Tele 5
+    aliases: [Tele5]
+    category: ogólne
+  - id: polonia-1.pl
+    name: Polonia 1
+    aliases: []
+    category: ogólne
+  - id: stars-tv.pl
+    name: Stars.TV
+    aliases: [Stars TV]
+    category: muzyczne
+  - id: fan-klub.pl
+    name: FAN Klub
+    aliases: [FAN KLUB, FanKlub TV, Fanklub TV]
+    category: rozrywkowe
+  - id: e-sport.pl
+    name: E-SPORT
+    aliases: [E SPORT, Esport TV]
+    category: e-sport
+  - id: ksw.pl
+    name: KSW
+    aliases: [KSW TV, KSWTV, PPV KSW]
+    category: VOD/PPV
+  - id: ppv-event-fight-1.pl
+    name: PPV Event Fight 1
+    aliases: [PPV Fight 1, PPV Event Fight 1 HD]
+    category: VOD/PPV
+  - id: ppv-event-fight-2.pl
+    name: PPV Event Fight 2
+    aliases: [PPV Fight 2, PPV Event Fight 2 HD]
+    category: VOD/PPV
+  - id: viaplay-xtra.pl
+    name: Viaplay Xtra
+    aliases: [Viaplay Extra]
+    category: sportowe/eventowe
+  - id: viaplay-sports-1.pl
+    name: Viaplay Sports 1
+    aliases: [Viaplay Sport 1]
+    category: sportowe/eventowe
+  - id: viaplay-sports-2.pl
+    name: Viaplay Sports 2
+    aliases: [Viaplay Sport 2]
+    category: sportowe/eventowe
+  - id: viaplay-1.pl
+    name: Viaplay 1
+    aliases: [ViaPlay 1, Via Play 1, Viaplay PPV 1, Viaplay-PL 1]
+    category: sportowe/eventowe
+  - id: viaplay-2.pl
+    name: Viaplay 2
+    aliases: [ViaPlay 2, Via Play 2, Viaplay PPV 2, Viaplay-PL 2]
+    category: sportowe/eventowe
+  - id: viaplay-3.pl
+    name: Viaplay 3
+    aliases: [ViaPlay 3, Via Play 3, Viaplay PPV 3, Viaplay-PL 3]
+    category: sportowe/eventowe
+  - id: viaplay-4.pl
+    name: Viaplay 4
+    aliases: [ViaPlay 4, Via Play 4, Viaplay PPV 4, Viaplay-PL 4]
+    category: sportowe/eventowe
+  - id: viaplay-5.pl
+    name: Viaplay 5
+    aliases: [ViaPlay 5, Via Play 5, Viaplay PPV 5, Viaplay-PL 5]
+    category: sportowe/eventowe
+  - id: viaplay-6.pl
+    name: Viaplay 6
+    aliases: [ViaPlay 6, Via Play 6, Viaplay PPV 6, Viaplay-PL 6]
+    category: sportowe/eventowe
+  - id: viaplay-7.pl
+    name: Viaplay 7
+    aliases: [ViaPlay 7, Via Play 7, Viaplay-PL 7]
+    category: sportowe/eventowe
+  - id: viaplay-8.pl
+    name: Viaplay 8
+    aliases: [ViaPlay 8, Via Play 8, Viaplay-PL 8]
+    category: sportowe/eventowe
+  - id: viaplay-9.pl
+    name: Viaplay 9
+    aliases: [ViaPlay 9, Via Play 9, Viaplay-PL 9]
+    category: sportowe/eventowe
+  - id: viaplay-10.pl
+    name: Viaplay 10
+    aliases: [ViaPlay 10, Via Play 10, Viaplay-PL 10]
+    category: sportowe/eventowe
+  - id: viaplay-11.pl
+    name: Viaplay 11
+    aliases: [ViaPlay 11, Via Play 11]
+    category: sportowe/eventowe
+  - id: viaplay-12.pl
+    name: Viaplay 12
+    aliases: [ViaPlay 12, Via Play 12]
+    category: sportowe/eventowe
+  - id: viaplay-13.pl
+    name: Viaplay 13
+    aliases: [ViaPlay 13, Via Play 13]
+    category: sportowe/eventowe
+  - id: viaplay-14.pl
+    name: Viaplay 14
+    aliases: [ViaPlay 14, Via Play 14]
+    category: sportowe/eventowe
+  - id: viaplay-15.pl
+    name: Viaplay 15
+    aliases: [ViaPlay 15, Via Play 15]
+    category: sportowe/eventowe
+  - id: viaplay-16.pl
+    name: Viaplay 16
+    aliases: [ViaPlay 16, Via Play 16]
+    category: sportowe/eventowe
+  - id: viaplay-17.pl
+    name: Viaplay 17
+    aliases: [ViaPlay 17, Via Play 17]
+    category: sportowe/eventowe
+  - id: viaplay-18.pl
+    name: Viaplay 18
+    aliases: [ViaPlay 18, Via Play 18]
+    category: sportowe/eventowe
+  - id: viaplay-19.pl
+    name: Viaplay 19
+    aliases: [ViaPlay 19, Via Play 19]
+    category: sportowe/eventowe
+  - id: viaplay-20.pl
+    name: Viaplay 20
+    aliases: [ViaPlay 20, Via Play 20]
+    category: sportowe/eventowe
+  - id: vod-201.pl
+    name: VOD 201
+    aliases: [VOD201]
+    category: VOD/PPV
+  - id: vod-202.pl
+    name: VOD 202
+    aliases: [VOD202]
+    category: VOD/PPV
+  - id: vod-203.pl
+    name: VOD 203
+    aliases: [VOD203]
+    category: VOD/PPV
+  - id: vod-204.pl
+    name: VOD 204
+    aliases: [VOD204]
+    category: VOD/PPV
+  - id: vod-205.pl
+    name: VOD 205
+    aliases: [VOD205]
+    category: VOD/PPV
+  - id: ppv-1.pl
+    name: PPV 1
+    aliases: [PPV1]
+    category: VOD/PPV
+  - id: ppv-2.pl
+    name: PPV 2
+    aliases: [PPV2]
+    category: VOD/PPV
+  - id: ppv-3.pl
+    name: PPV 3
+    aliases: [PPV3]
+    category: VOD/PPV
+  - id: ppv-4.pl
+    name: PPV 4
+    aliases: [PPV4]
+    category: VOD/PPV
+  - id: ppv-5.pl
+    name: PPV 5
+    aliases: [PPV5]
+    category: VOD/PPV

@@ -1,0 +1,22 @@
+[Unit]
+Description=KR Live EPG HTTP service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=kr-epg
+Group=kr-epg
+WorkingDirectory=/opt/kr-live-epg
+EnvironmentFile=/opt/kr-live-epg/.env
+ExecStart=/opt/kr-live-epg/.venv/bin/kr-live-epg serve --config /opt/kr-live-epg/config.yaml --host 0.0.0.0 --port 8080
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/kr-live-epg/output /opt/kr-live-epg/state
+
+[Install]
+WantedBy=multi-user.target

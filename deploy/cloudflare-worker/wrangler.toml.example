@@ -1,0 +1,13 @@
+name = "kr-live-epg"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+
+[[r2_buckets]]
+binding = "EPG_BUCKET"
+bucket_name = "kr-live-epg"
+
+[vars]
+OBJECT_PREFIX = "v1"
+
+# Token ustaw poleceniem, nigdy w tym pliku:
+# npx wrangler secret put DELIVERY_TOKEN

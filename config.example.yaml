@@ -1,0 +1,107 @@
+timezone: Europe/Warsaw
+state_path: state/kr-live-epg.sqlite3
+
+http:
+  timeout_seconds: 30
+  retries: 3
+  max_download_mb: 200
+  max_uncompressed_mb: 512
+
+# Używaj wyłącznie źródeł, których warunki zezwalają na Twój sposób użycia.
+guide_sources:
+  - id: epg-ovh-plar
+    type: xmltv
+    url: https://epg.ovh/plar.gz
+    priority: 50
+    enabled: true
+    trusted: false
+    timezone: Europe/Warsaw
+  - id: epg-ovh-pltv
+    type: xmltv
+    url: https://epg.ovh/pltv.gz
+    priority: 60
+    enabled: true
+    trusted: false
+    timezone: Europe/Warsaw
+
+profiles:
+  dom:
+    playlist:
+      type: none
+      source_id: dom
+      # M3U: ustaw type: m3u oraz url: albo path:
+      # Xtream: type: xtream, base_url:, username: ${XTREAM_USERNAME}, password: ${XTREAM_PASSWORD}
+      # Stalker: type: stalker, portal_url:, mac: ${STALKER_MAC}
+    delivery_token: ${EPG_DELIVERY_TOKEN:-}
+    # Główny, pełny przewodnik dla TiViMate i archiwum catch-up.
+    past_days: 7
+    future_days: 14
+    auto_match_threshold: 92
+    auto_match_margin: 6
+    include_unmatched_channels: true
+    emit_provider_aliases: true
+    emit_uncompressed_xml: true
+    max_description_chars: 1200
+  lekki:
+    playlist:
+      type: none
+      source_id: lekki
+    delivery_token: ${EPG_DELIVERY_TOKEN:-}
+    # Dla starszych/słabszych TV boxów i szybszego ładowania.
+    past_days: 2
+    future_days: 7
+    auto_match_threshold: 92
+    auto_match_margin: 6
+    include_unmatched_channels: true
+    emit_provider_aliases: true
+    emit_uncompressed_xml: true
+    max_description_chars: 900
+
+sentinel:
+  enabled: false
+  near_window_hours: 36
+  feeds: []
+  rules: []
+  # Przykład reguły dla własnego/oficjalnego RSS:
+  # feeds:
+  #   - id: polsat-oficjalny
+  #     url: https://example.invalid/oficjalny-rss.xml
+  #     type: rss
+  #     official: true
+  # Strona HTML też jest możliwa: type: html oraz item_xpath: //article
+  # rules:
+  #   - id: pilna-siatkowka-polsat
+  #     pattern: '(?P<title>finał.*siatk(?:ówki|owki))'
+  #     channel_ids: [polsat.pl, polsat-sport-1.pl]
+  #     required_terms: [transmisja]
+  #     default_duration_minutes: 180
+
+tmdb:
+  enabled: false
+  api_token: ${TMDB_API_TOKEN:-}
+  language: pl-PL
+  region: PL
+  cache_days: 90
+  max_cast: 8
+  max_requests_per_run: 80
+
+logos:
+  enabled: true
+  refresh_days: 30
+  max_download_kb: 2048
+  workers: 8
+
+storage:
+  type: local
+  local_directory: output
+  # Dla GitHub Pages: https://LOGIN.github.io/NAZWA-REPO/v1
+  public_base_url: ${EPG_PUBLIC_BASE_URL:-}
+  # Dla Cloudflare R2 zmień type na s3 i uzupełnij pola zmiennymi środowiskowymi.
+  # bucket: ${R2_BUCKET}
+  # endpoint_url: ${R2_ENDPOINT_URL}
+  # access_key_id: ${R2_ACCESS_KEY_ID}
+  # secret_access_key: ${R2_SECRET_ACCESS_KEY}
+  # region: auto
+  # prefix: v1
+  # Worker z tokenem w ścieżce: https://epg.twoja-domena.pl/v1/${EPG_DELIVERY_TOKEN}
+  # public_base_url: https://epg.twoja-domena.pl/v1/${EPG_DELIVERY_TOKEN}
