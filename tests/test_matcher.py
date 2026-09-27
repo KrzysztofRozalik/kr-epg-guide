@@ -52,3 +52,18 @@ def test_photo_examples_match_rebrands_and_decorated_event_channels() -> None:
     }
     for name, expected in examples.items():
         assert matcher.match(_channel(name)).canonical_id == expected
+
+
+def test_tvp3_local_stations_keep_their_regional_identity() -> None:
+    registry = ChannelRegistry.load()
+    matcher = ChannelMatcher(registry)
+    examples = {
+        "PL | TVP 3 Wrocław FHD": "tvp-3-wroclaw.pl",
+        "[POL] TVP3 BIALYSTOK HD": "tvp-3-bialystok.pl",
+        "TVP 3 Gorzów Wlkp. VIP PL": "tvp-3-gorzow-wielkopolski.pl",
+        "PL: TVP 3 Łódź 1080p": "tvp-3-lodz.pl",
+        "TVP3 Olsztyn/Elbląg": "tvp-3-olsztyn.pl",
+        "TVP 3": "tvp-3.pl",
+    }
+    for name, expected in examples.items():
+        assert matcher.match(_channel(name)).canonical_id == expected
