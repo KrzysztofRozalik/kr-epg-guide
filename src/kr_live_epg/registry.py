@@ -35,43 +35,6 @@ class ChannelRegistry:
                     self.alias_index.setdefault(normalized, set()).add(channel.id)
                     self.compact_index.setdefault(compact_signature(alias), set()).add(channel.id)
 
-from __future__ import annotations
-
-from importlib.resources import files
-from pathlib import Path
-
-import yaml
-
-from .models import CanonicalChannel, Channel
-from .normalize import compact_signature, normalize_channel_name, slugify_channel
-
-
-class ChannelRegistry:
-    def __init__(self, channels: list[CanonicalChannel]) -> None:
-        self.channels: dict[str, CanonicalChannel] = {channel.id: channel for channel in channels}
-        self._reindex()
-
-    @classmethod
-    def load(cls, custom_path: str | None = None) -> ChannelRegistry:
-        path = (
-            Path(custom_path)
-            if custom_path
-            else Path(str(files("kr_live_epg.resources").joinpath("channels_pl.yaml")))
-        )
-        raw = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
-        channels = [CanonicalChannel.model_validate(item) for item in raw.get("channels", [])]
-        return cls(channels)
-
-    def _reindex(self) -> None:
-        self.alias_index: dict[str, set[str]] = {}
-        self.compact_index: dict[str, set[str]] = {}
-        for channel in self.channels.values():
-            for alias in [channel.name, channel.id, *channel.aliases, *channel.predecessor_ids]:
-                normalized = normalize_channel_name(alias).normalized
-                if normalized:
-                    self.alias_index.setdefault(normalized, set()).add(channel.id)
-                    self.compact_index.setdefault(compact_signature(alias), set()).add(channel.id)
-
     def get(self, channel_id: str) -> CanonicalChannel | None:
         return self.channels.get(channel_id)
 
@@ -97,43 +60,6 @@ class ChannelRegistry:
         if len(candidates) == 1:
             existing = self.channels[next(iter(candidates))]
             return self.merge_source_metadata(existing, channel)
-
-        base_id = f"{slugify_channel(channel.name)}.pl"
-        dynamic_id = base_id
-        counter = 2
-        while dynamic_id in self.channels:
-            dynamic_id = f"{base_id.removesuffix('.pl')}-{counter}.pl"
-            counter += 1
-        created = CanonicalChannel(
-            id=dynamic_id,
-            name=channel.name.strip(),
-            aliases=list(dict.fromkeys([channel.name, *channel.aliases])),
-            category=channel.group,
-            logo=channel.logo,
-        )
-        self.channels[dynamic_id] = created
-        self._reindex()
-        return created
-
-    def active(self) -> list[CanonicalChannel]:
-        return [channel for channel in self.channels.values() if channel.active]
-    def get(self, channel_id: str) -> CanonicalChannel | None:
-        return self.channels.get(channel_id)
-
-    def add_or_merge_dynamic(self, channel: Channel) -> CanonicalChannel:
-        candidates: set[str] = set()
-        for alias in [channel.name, channel.tvg_id or "", *channel.aliases]:
-            normalized = normalize_channel_name(alias).normalized
-            candidates.update(self.alias_index.get(normalized, set()))
-            candidates.update(self.compact_index.get(compact_signature(alias), set()))
-        if len(candidates) == 1:
-            existing = self.channels[next(iter(candidates))]
-            combined = list(dict.fromkeys([*existing.aliases, channel.name, *channel.aliases]))
-            existing.aliases = combined
-            if not existing.logo and channel.logo:
-                existing.logo = channel.logo
-            self._reindex()
-            return existing
 
         base_id = f"{slugify_channel(channel.name)}.pl"
         dynamic_id = base_id
