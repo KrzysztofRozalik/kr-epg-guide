@@ -1,5 +1,7 @@
 from datetime import UTC, datetime, timedelta
 
+import pytest
+
 from kr_live_epg.config import (
     AppConfig,
     GuideSourceConfig,
@@ -12,6 +14,45 @@ from kr_live_epg.models import Channel, Guide, PlaylistKind, Programme
 from kr_live_epg.pipeline import EpgPipeline
 from kr_live_epg.providers.xmltv import parse_xmltv
 from kr_live_epg.registry import ChannelRegistry
+
+
+@pytest.mark.parametrize(
+    ("base_name", "variant_name"),
+    [
+        ("Sky Sports F1", "Sky Sports F1 UHD"),
+        ("Travel XP", "Travelxp 4K"),
+        ("Separate Feed", "Separate Feed HD"),
+    ],
+)
+def test_distinct_source_quality_feeds_stay_separate(base_name, variant_name) -> None:
+    start = datetime.now(UTC)
+    registry = ChannelRegistry([])
+    for source_id in ("first", "second"):
+        guide = Guide(
+            source_id=source_id,
+            channels=[
+                Channel(source_id=source_id, provider_id="base", name=base_name),
+                Channel(source_id=source_id, provider_id="variant", name=variant_name),
+            ],
+            programmes=[
+                Programme(
+                    channel_id=provider_id,
+                    start=start,
+                    stop=start + timedelta(hours=1),
+                    title=provider_id,
+                    source_id=source_id,
+                )
+                for provider_id in ("base", "variant")
+            ],
+        )
+        mapped = {
+            item.title: item.channel_id
+            for item in EpgPipeline._canonicalize_guides([guide], registry)
+        }
+        assert mapped["base"] != mapped["variant"]
+        assert registry.get(mapped["base"]).name == base_name
+        assert registry.get(mapped["variant"]).name == variant_name
+    assert len(registry.channels) == 2
 
 
 def test_end_to_end_build_normalizes_playlist_and_emits_xmltv(tmp_path) -> None:
@@ -117,3 +158,82 @@ def test_source_aliases_do_not_pollute_canonical_registry() -> None:
     registry = ChannelRegistry.load()
     EpgPipeline._canonicalize_guides([guide], registry)
     assert "NIEPOWIĄZANY KANAŁ" not in registry.get("tvn.pl").aliases
+
+
+def test_dedicated_4k_and_foreign_canal_plus_schedules_stay_separate() -> None:
+    start = datetime.now(UTC)
+    guide = Guide(
+        source_id="fixture",
+        channels=[
+            Channel(source_id="fixture", provider_id="pl4k", name="Canal+ 4K Ultra HD"),
+            Channel(source_id="fixture", provider_id="fr", name="Canal+"),
+        ],
+        programmes=[
+            Programme(
+                channel_id="pl4k",
+                start=start,
+                stop=start + timedelta(hours=1),
+                title="Polska ramówka 4K",
+                source_id="fixture",
+            ),
+            Programme(
+                channel_id="fr",
+                start=start,
+                stop=start + timedelta(hours=1),
+                title="Francuska ramówka",
+                source_id="fixture",
+            ),
+        ],
+    )
+    registry = ChannelRegistry.load()
+    mapped = {
+        entry.title: entry.channel_id
+        for entry in EpgPipeline._canonicalize_guides([guide], registry)
+    }
+    assert mapped["Polska ramówka 4K"] == "canal-plus-4k.pl"
+    assert mapped["Francuska ramówka"] == "canal-plus.pl"
+
+
+def test_guide_identity_ignores_unrelated_aliases_and_provider_ids() -> None:
+    start = datetime.now(UTC)
+    guide = Guide(
+        source_id="fixture",
+        channels=[
+            Channel(
+                source_id="fixture",
+                provider_id="tvn.pl",
+                name="Niepowiązana Stacja",
+                aliases=["TVN"],
+            )
+        ],
+        programmes=[
+            Programme(
+                channel_id="tvn.pl",
+                start=start,
+                stop=start + timedelta(hours=1),
+                title="Obca ramówka",
+                source_id="fixture",
+            )
+        ],
+    )
+    registry = ChannelRegistry.load()
+    result = EpgPipeline._canonicalize_guides([guide], registry)
+    assert len(result) == 1
+    assert result[0].channel_id != "tvn.pl"
+
+
+def test_orphan_programme_ids_are_not_fuzzy_matched() -> None:
+    start = datetime.now(UTC)
+    guide = Guide(
+        source_id="fixture",
+        programmes=[
+            Programme(
+                channel_id="PolsaT News Extra",
+                start=start,
+                stop=start + timedelta(hours=1),
+                title="Nieznana ramówka",
+                source_id="fixture",
+            )
+        ],
+    )
+    assert EpgPipeline._canonicalize_guides([guide], ChannelRegistry.load()) == []

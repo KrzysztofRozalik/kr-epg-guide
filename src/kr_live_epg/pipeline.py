@@ -14,7 +14,7 @@ from .merge import merge_programmes
 from .metadata import TmdbEnricher
 from .models import BuildStats, CanonicalChannel, Channel, Guide, PlaylistKind, Programme
 from .providers import StalkerProvider, XmltvProvider, XtreamProvider
-from .registry import ChannelRegistry
+from .registry import ChannelRegistry, primary_name_key
 from .sentinel import LiveSentinel, events_to_programmes
 from .state import StateStore
 from .storage import Publisher
@@ -64,7 +64,6 @@ class EpgPipeline:
         all_programmes: list[Programme] = []
         for guide in guides:
             source_map: dict[str, str] = {}
-            matcher = ChannelMatcher(registry, threshold=88, margin=5)
             programme_channel_ids = {programme.channel_id for programme in guide.programmes}
             # Reserve canonical IDs explicitly named by this source. A legacy
             # alias (e.g. "Polsat Sport") must not collapse into the same ID
@@ -74,29 +73,36 @@ class EpgPipeline:
                 for channel in guide.channels
                 if (canonical := registry.get_by_primary_name(channel.name)) is not None
             }
+            observed_primary_names = {
+                primary_name_key(channel.name)
+                for channel in guide.channels
+                if channel.provider_id in programme_channel_ids
+            }
             for channel in guide.channels:
                 # Empty catalogue aliases (notably numbered virtual event feeds)
                 # must not collapse several real provider channels into one ID.
                 if channel.provider_id not in programme_channel_ids:
-                    match = matcher.match(channel)
-                    canonical = registry.get(match.canonical_id) if match.canonical_id else None
+                    canonical = registry.get_by_primary_name(channel.name)
+                    if canonical is None:
+                        canonical = registry.get_by_alias_name(channel.name)
                     if canonical and not canonical.logo and channel.logo:
                         canonical.logo = channel.logo
                     continue
                 canonical = registry.get_by_primary_name(channel.name)
                 if canonical is None:
-                    match = matcher.match(channel)
-                    # Guide data is fail-closed: fuzzy/legacy aliases may only
-                    # claim an ID that is not explicitly present in the guide.
+                    # Upstream IDs and additional display names are not station
+                    # identity. Match only the observed primary name against our
+                    # curated aliases; do not spend time computing unused fuzzy
+                    # scores or let unrelated source aliases choose a station.
+                    alias = registry.get_by_alias_name(channel.name)
                     if (
-                        match.canonical_id
-                        and match.method in {"exact-id", "exact-normalized-name"}
-                        and match.canonical_id not in primary_claims
+                        alias
+                        and alias.id not in primary_claims
+                        and primary_name_key(alias.name) not in observed_primary_names
                     ):
-                        canonical = registry.get(match.canonical_id)
+                        canonical = alias
                 if canonical is None:
                     canonical = registry.add_isolated_dynamic(channel)
-                    matcher = ChannelMatcher(registry, threshold=88, margin=5)
                 if not canonical:
                     continue
                 if not canonical.logo and channel.logo:
@@ -107,14 +113,10 @@ class EpgPipeline:
             for programme in guide.programmes:
                 canonical_id = source_map.get(programme.channel_id)
                 if canonical_id is None:
-                    synthetic = Channel(
-                        source_id=guide.source_id,
-                        provider_id=programme.channel_id,
-                        tvg_id=programme.channel_id,
-                        name=programme.channel_id,
-                    )
-                    match = matcher.match(synthetic)
-                    canonical_id = match.canonical_id
+                    canonical = registry.get(programme.channel_id)
+                    if canonical is None:
+                        canonical = registry.get_by_alias_name(programme.channel_id)
+                    canonical_id = canonical.id if canonical else None
                 if canonical_id:
                     programme.channel_id = canonical_id
                     all_programmes.append(programme)

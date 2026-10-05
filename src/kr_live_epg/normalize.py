@@ -3,6 +3,7 @@ from __future__ import annotations
 import re
 import unicodedata
 from dataclasses import dataclass
+from functools import lru_cache
 
 from unidecode import unidecode
 
@@ -45,6 +46,8 @@ _NOISE_TOKENS = {
 }
 
 _SEMANTIC_TOKENS = {
+    "4k",
+    "uhd",
     "2",
     "3",
     "4",
@@ -125,6 +128,7 @@ def _drop_noise_brackets(value: str) -> str:
     return value
 
 
+@lru_cache(maxsize=16384)
 def normalize_channel_name(value: str) -> NormalizedName:
     """Normalize reseller decorations without deleting semantic station identity."""
 
@@ -142,7 +146,23 @@ def normalize_channel_name(value: str) -> NormalizedName:
     text = _SEPARATOR_RE.sub(" ", text)
     text = _NON_WORD_RE.sub(" ", text)
     parts = [part for part in _SPACE_RE.split(text.strip()) if part]
-    parts = [part for part in parts if part not in _NOISE_TOKENS]
+    # These feeds have distinct schedules in the source catalogue. Keep their
+    # identity, while e.g. "TVN 4K" remains a provider quality decoration.
+    base_tokens = tuple(part for part in parts if part not in _NOISE_TOKENS)
+    dedicated_4k = "4k" in parts and base_tokens in {
+        ("canal", "plus"),
+        ("c", "plus"),
+        ("travelxp",),
+        ("travel", "xp"),
+    }
+    dedicated_uhd = "uhd" in parts and base_tokens == ("sky", "sports", "f1")
+    parts = [
+        part
+        for part in parts
+        if part not in _NOISE_TOKENS
+        or (part == "4k" and dedicated_4k)
+        or (part == "uhd" and dedicated_uhd)
+    ]
     normalized = " ".join(parts)
     numbers = tuple(part for part in parts if part.isdigit())
     semantic = tuple(part for part in parts if part in _SEMANTIC_TOKENS)

@@ -20,6 +20,19 @@ def test_never_confuses_channel_numbers() -> None:
     assert match.canonical_id is None
 
 
+def test_dedicated_4k_station_is_not_generic_canal_plus() -> None:
+    registry = ChannelRegistry(
+        [
+            CanonicalChannel(id="canal-plus.pl", name="Canal+"),
+            CanonicalChannel(id="canal-plus-4k.pl", name="Canal+ 4K Ultra HD"),
+        ]
+    )
+    matcher = ChannelMatcher(registry)
+    assert matcher.match(_channel("PL| CANAL+ 4K ULTRA HD")).canonical_id == "canal-plus-4k.pl"
+    assert matcher.match(_channel("Canal+ HD")).canonical_id == "canal-plus.pl"
+    assert ChannelMatcher._score("Canal+", "Canal+ 4K Ultra HD") == 0
+
+
 def test_predecessor_id_can_resolve_rebrand() -> None:
     registry = ChannelRegistry(
         [

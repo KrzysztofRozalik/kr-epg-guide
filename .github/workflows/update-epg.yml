@@ -4,6 +4,15 @@ on:
   schedule:
     - cron: "17 * * * *"
   workflow_dispatch:
+    inputs:
+      runner:
+        description: Standardowy darmowy wykonawca (repozytorium publiczne)
+        required: true
+        default: ubuntu-latest
+        type: choice
+        options:
+          - ubuntu-latest
+          - ubuntu-24.04-arm
 
 permissions:
   contents: write
@@ -16,7 +25,7 @@ concurrency:
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.runner || 'ubuntu-latest' }}
     timeout-minutes: 20
     environment:
       name: github-pages
@@ -68,7 +77,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python -m pip install --disable-pip-version-check ./generator
+          python -m pip install --disable-pip-version-check './generator[dev]'
+          python -m pytest -q generator/tests
           mkdir -p "$EPG_SITE_DIR"
           cp -R generator/deploy/github-pages/site/. "$EPG_SITE_DIR/"
           if [ -n "${TMDB_API_TOKEN:-}" ]; then
@@ -81,6 +91,12 @@ jobs:
           kr-live-epg validate "$EPG_OUTPUT_DIRECTORY/lekki/epg.xml.gz"
           kr-live-epg validate "$EPG_OUTPUT_DIRECTORY/dom/epg.xml"
           kr-live-epg validate "$EPG_OUTPUT_DIRECTORY/lekki/epg.xml"
+          python generator/scripts/audit_source_identity.py \
+            "$EPG_OUTPUT_DIRECTORY/lekki/epg.xml.gz" \
+            "$GITHUB_WORKSPACE/source-cache/epg-ovh-plar.xmltv.cache" \
+            "$GITHUB_WORKSPACE/source-cache/epg-ovh-pltv.xmltv.cache" \
+            --allow-live-channel ksw.pl \
+            > "$EPG_SITE_DIR/source-identity-audit.json"
           sha256sum \
             "$EPG_OUTPUT_DIRECTORY/dom/epg.xml.gz" \
             "$EPG_OUTPUT_DIRECTORY/lekki/epg.xml.gz" \

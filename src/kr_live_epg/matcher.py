@@ -96,6 +96,8 @@ class ChannelMatcher:
         # Channel numbers are identity, not decoration. Never map Sport 1 to Sport 2.
         if source.numbers != target.numbers and (source.numbers or target.numbers):
             return 0.0
+        if ({"4k", "uhd"} & set(source.tokens)) != ({"4k", "uhd"} & set(target.tokens)):
+            return 0.0
 
         compact_left = source.normalized.replace(" ", "")
         compact_right = target.normalized.replace(" ", "")

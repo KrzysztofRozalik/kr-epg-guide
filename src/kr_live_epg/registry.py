@@ -9,6 +9,12 @@ from .models import CanonicalChannel, Channel
 from .normalize import compact_signature, normalize_channel_name, slugify_channel
 
 
+def primary_name_key(name: str) -> str:
+    """Source identity keeps quality words; only case and spacing are cosmetic."""
+
+    return "".join(name.casefold().split())
+
+
 class ChannelRegistry:
     def __init__(self, channels: list[CanonicalChannel]) -> None:
         self.channels: dict[str, CanonicalChannel] = {channel.id: channel for channel in channels}
@@ -30,7 +36,7 @@ class ChannelRegistry:
         self.compact_index: dict[str, set[str]] = {}
         self.primary_index: dict[str, set[str]] = {}
         for channel in self.channels.values():
-            primary = normalize_channel_name(channel.name).normalized
+            primary = primary_name_key(channel.name)
             if primary:
                 self.primary_index.setdefault(primary, set()).add(channel.id)
             for alias in [channel.name, channel.id, *channel.aliases, *channel.predecessor_ids]:
@@ -43,7 +49,15 @@ class ChannelRegistry:
         return self.channels.get(channel_id)
 
     def get_by_primary_name(self, name: str) -> CanonicalChannel | None:
-        candidates = self.primary_index.get(normalize_channel_name(name).normalized, set())
+        candidates = self.primary_index.get(primary_name_key(name), set())
+        if len(candidates) != 1:
+            return None
+        return self.channels[next(iter(candidates))]
+
+    def get_by_alias_name(self, name: str) -> CanonicalChannel | None:
+        """Match one observed name against curated aliases, without provider IDs."""
+        candidates = set(self.alias_index.get(normalize_channel_name(name).normalized, set()))
+        candidates.update(self.compact_index.get(compact_signature(name), set()))
         if len(candidates) != 1:
             return None
         return self.channels[next(iter(candidates))]
