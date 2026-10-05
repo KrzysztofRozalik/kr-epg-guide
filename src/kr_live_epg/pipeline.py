@@ -66,6 +66,14 @@ class EpgPipeline:
             source_map: dict[str, str] = {}
             matcher = ChannelMatcher(registry, threshold=88, margin=5)
             programme_channel_ids = {programme.channel_id for programme in guide.programmes}
+            # Reserve canonical IDs explicitly named by this source. A legacy
+            # alias (e.g. "Polsat Sport") must not collapse into the same ID
+            # when the source also carries the current "Polsat Sport 1" feed.
+            primary_claims = {
+                canonical.id
+                for channel in guide.channels
+                if (canonical := registry.get_by_primary_name(channel.name)) is not None
+            }
             for channel in guide.channels:
                 # Empty catalogue aliases (notably numbered virtual event feeds)
                 # must not collapse several real provider channels into one ID.
@@ -75,15 +83,24 @@ class EpgPipeline:
                     if canonical and not canonical.logo and channel.logo:
                         canonical.logo = channel.logo
                     continue
-                match = matcher.match(channel)
-                if match.canonical_id:
-                    canonical = registry.get(match.canonical_id)
-                else:
-                    canonical = registry.add_or_merge_dynamic(channel)
+                canonical = registry.get_by_primary_name(channel.name)
+                if canonical is None:
+                    match = matcher.match(channel)
+                    # Guide data is fail-closed: fuzzy/legacy aliases may only
+                    # claim an ID that is not explicitly present in the guide.
+                    if (
+                        match.canonical_id
+                        and match.method in {"exact-id", "exact-normalized-name"}
+                        and match.canonical_id not in primary_claims
+                    ):
+                        canonical = registry.get(match.canonical_id)
+                if canonical is None:
+                    canonical = registry.add_isolated_dynamic(channel)
                     matcher = ChannelMatcher(registry, threshold=88, margin=5)
                 if not canonical:
                     continue
-                registry.merge_source_metadata(canonical, channel)
+                if not canonical.logo and channel.logo:
+                    canonical.logo = channel.logo
                 source_map[channel.provider_id] = canonical.id
                 if channel.tvg_id:
                     source_map[channel.tvg_id] = canonical.id
@@ -136,9 +153,11 @@ class EpgPipeline:
             if canonical is None:
                 cached_id = self.state.get_mapping(profile_name, channel.provider_id)
                 cached = registry.get(cached_id) if cached_id else None
-                if cached and ChannelMatcher._score(channel.name, cached.name) >= 75:
+                if cached and ChannelMatcher._score(channel.name, cached.name) >= max(
+                    92, profile.auto_match_threshold
+                ):
                     canonical = cached
-                    match.score = 75
+                    match.score = ChannelMatcher._score(channel.name, cached.name)
                     match.method = "persistent-provider-id"
             if canonical is None and profile.include_unmatched_channels:
                 canonical = registry.add_or_merge_dynamic(channel)

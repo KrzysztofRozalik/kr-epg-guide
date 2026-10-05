@@ -28,7 +28,11 @@ class ChannelRegistry:
     def _reindex(self) -> None:
         self.alias_index: dict[str, set[str]] = {}
         self.compact_index: dict[str, set[str]] = {}
+        self.primary_index: dict[str, set[str]] = {}
         for channel in self.channels.values():
+            primary = normalize_channel_name(channel.name).normalized
+            if primary:
+                self.primary_index.setdefault(primary, set()).add(channel.id)
             for alias in [channel.name, channel.id, *channel.aliases, *channel.predecessor_ids]:
                 normalized = normalize_channel_name(alias).normalized
                 if normalized:
@@ -37,6 +41,12 @@ class ChannelRegistry:
 
     def get(self, channel_id: str) -> CanonicalChannel | None:
         return self.channels.get(channel_id)
+
+    def get_by_primary_name(self, name: str) -> CanonicalChannel | None:
+        candidates = self.primary_index.get(normalize_channel_name(name).normalized, set())
+        if len(candidates) != 1:
+            return None
+        return self.channels[next(iter(candidates))]
 
     def merge_source_metadata(
         self, canonical: CanonicalChannel, channel: Channel
@@ -52,6 +62,9 @@ class ChannelRegistry:
         return canonical
 
     def add_or_merge_dynamic(self, channel: Channel) -> CanonicalChannel:
+        primary = self.get_by_primary_name(channel.name)
+        if primary:
+            return primary
         candidates: set[str] = set()
         for alias in [channel.name, channel.tvg_id or "", *channel.aliases]:
             normalized = normalize_channel_name(alias).normalized
@@ -70,7 +83,31 @@ class ChannelRegistry:
         created = CanonicalChannel(
             id=dynamic_id,
             name=channel.name.strip(),
-            aliases=list(dict.fromkeys([channel.name, *channel.aliases])),
+            # Upstream XMLTV aliases are untrusted metadata. Keeping them here
+            # made unrelated stations share display names in the public guide.
+            aliases=[],
+            category=channel.group,
+            logo=channel.logo,
+        )
+        self.channels[dynamic_id] = created
+        self._reindex()
+        return created
+
+    def add_isolated_dynamic(self, channel: Channel) -> CanonicalChannel:
+        """Create/reuse a channel by primary name without trusting source aliases."""
+
+        if existing := self.get_by_primary_name(channel.name):
+            return existing
+        base_id = f"{slugify_channel(channel.name)}.pl"
+        dynamic_id = base_id
+        counter = 2
+        while dynamic_id in self.channels:
+            dynamic_id = f"{base_id.removesuffix('.pl')}-{counter}.pl"
+            counter += 1
+        created = CanonicalChannel(
+            id=dynamic_id,
+            name=channel.name.strip(),
+            aliases=[],
             category=channel.group,
             logo=channel.logo,
         )

@@ -74,6 +74,34 @@ def _tivimate_display_names(channel: CanonicalChannel) -> list[str]:
     return names
 
 
+def _unique_display_names(
+    channels: list[CanonicalChannel],
+) -> dict[str, list[str]]:
+    """Drop aliases shared by multiple IDs; ambiguous names mislead TiViMate."""
+
+    candidates = {
+        channel.id: list(
+            dict.fromkeys([channel.name, *channel.aliases, *_tivimate_display_names(channel)])
+        )
+        for channel in channels
+    }
+    owners: dict[str, set[str]] = defaultdict(set)
+    for channel_id, names in candidates.items():
+        for name in names:
+            clean = " ".join(name.split())
+            if clean:
+                owners[clean.casefold()].add(channel_id)
+    return {
+        channel.id: [
+            name
+            for name in candidates[channel.id]
+            if len(owners[" ".join(name.split()).casefold()]) == 1
+            or name.casefold() == channel.name.casefold()
+        ]
+        for channel in channels
+    }
+
+
 def _trim(value: str | None, limit: int) -> str | None:
     if value and len(value) > limit:
         return value[: limit - 1].rstrip() + "…"
@@ -230,6 +258,7 @@ def write_xmltv(
     destination.parent.mkdir(parents=True, exist_ok=True)
     provider_channels = provider_channels or []
     grouped, alias_to_canonical = _alias_ids(channels, provider_channels)
+    safe_display_names = _unique_display_names(channels)
     if not emit_provider_aliases:
         alias_to_canonical = {}
 
@@ -257,9 +286,8 @@ def write_xmltv(
                             channel.id,
                             channel.name,
                             aliases=[
-                                *channel.aliases,
                                 *provider_names,
-                                *_tivimate_display_names(channel),
+                                *safe_display_names[channel.id],
                             ],
                             logo=channel.logo,
                         )
@@ -320,10 +348,38 @@ def validate_xmltv(path: str | Path) -> None:
     if len(channel_ids) != len(set(channel_ids)):
         raise ValidationError("XMLTV zawiera zduplikowane identyfikatory kanałów")
     known = set(channel_ids)
+    display_name_owners: dict[str, set[str]] = defaultdict(set)
+    original_display_names: dict[str, str] = {}
+    for channel in root.findall("channel"):
+        channel_id = channel.get("id") or ""
+        for item in channel.findall("display-name"):
+            name = " ".join((item.text or "").split()).casefold()
+            if not name:
+                continue
+            display_name_owners[name].add(channel_id)
+            original_display_names[name] = item.text or name
+    programme_fingerprints: dict[str, set[tuple[str, str, tuple[str, ...]]]] = defaultdict(set)
     for programme in root.findall("programme"):
-        if programme.get("channel") not in known:
+        programme_channel = programme.get("channel") or ""
+        if programme_channel not in known:
             raise ValidationError("Program odwołuje się do nieistniejącego kanału")
         start = parse_xmltv_datetime(programme.get("start") or "")
         stop = parse_xmltv_datetime(programme.get("stop") or "")
         if stop <= start:
             raise ValidationError("Program ma czas końca wcześniejszy od początku")
+        programme_fingerprints[programme_channel].add(
+            (
+                programme.get("start") or "",
+                programme.get("stop") or "",
+                tuple((item.text or "") for item in programme.findall("title")),
+            )
+        )
+    for name, owners in display_name_owners.items():
+        if len(owners) < 2:
+            continue
+        fingerprints = [programme_fingerprints[owner] for owner in owners]
+        if not fingerprints[0] or any(item != fingerprints[0] for item in fingerprints[1:]):
+            raise ValidationError(
+                f"Nazwa kanału {original_display_names[name]!r} należy do różnych ramówek: "
+                + ", ".join(sorted(owners))
+            )
