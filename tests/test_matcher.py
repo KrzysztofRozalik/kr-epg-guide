@@ -7,6 +7,23 @@ def _channel(name: str) -> Channel:
     return Channel(source_id="test", provider_id="999", name=name)
 
 
+def test_matches_red_carpet_international_decorations_without_show_tv() -> None:
+    registry = ChannelRegistry.load()
+    registry.add_isolated_dynamic(_channel("Show TV"))
+    matcher = ChannelMatcher(registry)
+    for name in (
+        "Red Carpet International",
+        "Red Carpet Int",
+        "[PL] Red Carpet International HD",
+        "PL-VIP| RED CARPET TV INTERNATIONAL RAW",
+        "Red Carpet International FHD PL",
+    ):
+        match = matcher.match(_channel(name))
+        assert match.canonical_id == "red-carpet.pl"
+        assert match.score == 100
+    assert matcher.match(_channel("PL| Show TV FHD")).canonical_id == "show-tv.pl"
+
+
 def test_matches_heavily_decorated_name() -> None:
     registry = ChannelRegistry([CanonicalChannel(id="polsat-sport-1.pl", name="Polsat Sport 1")])
     match = ChannelMatcher(registry).match(_channel("[PL] | POLSAT SPORT 1 FHD 50FPS"))
@@ -80,3 +97,4 @@ def test_tvp3_local_stations_keep_their_regional_identity() -> None:
     }
     for name, expected in examples.items():
         assert matcher.match(_channel(name)).canonical_id == expected
+

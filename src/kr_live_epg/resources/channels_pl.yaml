@@ -419,6 +419,12 @@ channels:
     name: Stopklatka
     aliases: [Stopklatka TV]
     category: filmowe
+  - id: red-carpet.pl
+    name: Red Carpet
+    # International is a separate feed from Show TV (formerly Red Carpet TV).
+    # Keep the source's primary name and stable ID; expose vetted client names.
+    aliases: [Red Carpet Int, Red Carpet International, Red Carpet TV International]
+    category: filmowe
   - id: film-cafe.pl
     name: Film Cafe
     aliases: [Film Café]

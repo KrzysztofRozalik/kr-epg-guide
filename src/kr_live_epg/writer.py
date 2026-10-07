@@ -52,18 +52,19 @@ def _channel_element(
 def _tivimate_display_names(channel: CanonicalChannel) -> list[str]:
     """Emit common reseller spellings because TiViMate matches XMLTV names itself."""
 
-    signature = compact_signature(channel.name)
-    equivalent = sorted(
-        {
-            " ".join(alias.split())
-            for alias in channel.aliases
-            if alias.strip() and compact_signature(alias) == signature
-        },
-        key=lambda value: (len(value), value.casefold()),
-    )
-    # A few shortest spellings cover e.g. both ``TVP 3`` and ``TVP3`` without
-    # multiplying every provider decoration already collected from upstream.
-    bases = list(dict.fromkeys([channel.name, *equivalent[:3]]))
+    spellings: dict[str, set[str]] = defaultdict(set)
+    for alias in channel.aliases:
+        clean = " ".join(alias.split())
+        if clean:
+            spellings[compact_signature(clean)].add(clean)
+    # Decorate each curated identity, including names like Red Carpet
+    # International which differ from the source's primary name. Limit cosmetic
+    # spellings within each identity, not the distinct identities themselves.
+    bases = [channel.name]
+    for signature in sorted(spellings):
+        equivalent = sorted(spellings[signature], key=lambda value: (len(value), value.casefold()))
+        bases.extend(equivalent[:3])
+    bases = list(dict.fromkeys(bases))
     names: list[str] = []
     suffixes = ("", " PL", " HD", " FHD", " UHD", " 4K", " RAW", " HD PL", " FHD PL")
     prefixes = ("", "PL| ", "PL-VIP| ", "PL: ")

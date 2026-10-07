@@ -1,6 +1,7 @@
 from datetime import UTC, datetime, timedelta
 
 import pytest
+from lxml import etree
 
 from kr_live_epg.config import (
     AppConfig,
@@ -14,6 +15,52 @@ from kr_live_epg.models import Channel, Guide, PlaylistKind, Programme
 from kr_live_epg.pipeline import EpgPipeline
 from kr_live_epg.providers.xmltv import parse_xmltv
 from kr_live_epg.registry import ChannelRegistry
+
+
+def test_red_carpet_international_names_keep_their_own_schedule(tmp_path) -> None:
+    start = datetime.now(UTC) + timedelta(hours=1)
+    stop = start + timedelta(hours=1)
+    guide_path = tmp_path / "guide.xml"
+    guide_path.write_text(
+        f'<tv><channel id="red"><display-name>Red Carpet</display-name>'
+        '<display-name>Red Carpet Int</display-name>'
+        '<display-name>Red Carpet TV International</display-name></channel>'
+        '<channel id="show"><display-name>Show TV</display-name>'
+        '<display-name>Red Carpet International</display-name></channel>'
+        f'<programme channel="red" start="{start:%Y%m%d%H%M%S %z}" '
+        f'stop="{stop:%Y%m%d%H%M%S %z}"><title>Film International</title></programme>'
+        f'<programme channel="show" start="{start:%Y%m%d%H%M%S %z}" '
+        f'stop="{stop:%Y%m%d%H%M%S %z}"><title>Program Show TV</title></programme></tv>',
+        encoding="utf-8",
+    )
+    config = AppConfig(
+        state_path=str(tmp_path / "state.sqlite3"),
+        guide_sources=[GuideSourceConfig(id="fixture", url=str(guide_path))],
+        profiles={"dom": ProfileConfig(playlist=PlaylistConfig(type=PlaylistKind.NONE))},
+        sentinel=SentinelConfig(enabled=False),
+        storage=StorageConfig(type="local", local_directory=str(tmp_path / "output")),
+    )
+    EpgPipeline(config).run()
+    root = etree.parse(str(tmp_path / "output/dom/epg.xml"))
+    international = root.find("./channel[@id='red-carpet.pl']")
+    assert international is not None
+    names = {item.text for item in international.findall("display-name")}
+    assert {
+        "Red Carpet International",
+        "Red Carpet International HD PL",
+        "PL| Red Carpet International FHD",
+        "PL-VIP| Red Carpet TV International RAW",
+        "Red Carpet Int",
+    } <= names
+    assert [item.findtext("title") for item in root.findall("./programme[@channel='red-carpet.pl']")] == [
+        "Film International"
+    ]
+    assert [item.findtext("title") for item in root.findall("./programme[@channel='show-tv.pl']")] == [
+        "Program Show TV"
+    ]
+    show = root.find("./channel[@id='show-tv.pl']")
+    assert show is not None
+    assert "Red Carpet International" not in {item.text for item in show.findall("display-name")}
 
 
 @pytest.mark.parametrize(
@@ -237,3 +284,4 @@ def test_orphan_programme_ids_are_not_fuzzy_matched() -> None:
         ],
     )
     assert EpgPipeline._canonicalize_guides([guide], ChannelRegistry.load()) == []
+
